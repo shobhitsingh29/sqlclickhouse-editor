@@ -11,7 +11,7 @@ interface QueryResponse {
     error?: string;
 }
 
-type SqlOperation = 'select' | 'insert' | 'delete' | 'update';
+type SqlOperation = 'select' | 'insert' | 'delete' | 'update' | 'show';
 
 interface QueryResult {
     message?: string;
@@ -29,6 +29,7 @@ const SqlEditor: React.FC = () => {
         if (!normalizedSql) {
             throw new Error('Query cannot be empty');
         }
+        if (normalizedSql.startsWith('show')) return 'show';
         if (normalizedSql.startsWith('select')) return 'select';
         if (normalizedSql.startsWith('insert')) return 'insert';
         if (normalizedSql.startsWith('delete')) return 'delete';
@@ -49,7 +50,7 @@ const SqlEditor: React.FC = () => {
                 query: query.trim()
             });
 
-            if (operation !== 'select') {
+            if (operation !== 'select' && operation !== 'show') {
                 setResults([{
                     message: response.data.success
                         ? 'Operation completed successfully'
@@ -71,6 +72,11 @@ const SqlEditor: React.FC = () => {
         setIsLoading(true);
         await runQuery();
         setIsLoading(false);
+    };
+
+    const handleShowDatabases = () => {
+        setQuery('SHOW DATABASES;');
+        handleRunQuery();
     };
 
     const handleUploadComplete = (uploadResults?: Record<string, unknown>[]) => {
@@ -95,16 +101,26 @@ const SqlEditor: React.FC = () => {
                 onChange={(e) => setQuery(e.target.value)}
             />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleRunQuery}
-                    disabled={isLoading || !query.trim()}
-                    sx={{ mt: 2, mb: 2 }}
-                >
-                    {isLoading ? 'Running...' : 'Run Query'}
-                </Button>
+            <div style={{ display: 'flex', gap: 2, justifyContent: 'space-between' }}>
+                <div>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleRunQuery}
+                        disabled={isLoading || !query.trim()}
+                        sx={{ mt: 2, mb: 2, mr: 2 }}
+                    >
+                        {isLoading ? 'Running...' : 'Run Query'}
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={handleShowDatabases}
+                        disabled={isLoading}
+                        sx={{ mt: 2, mb: 2 }}
+                    >
+                        Show Databases
+                    </Button>
+                </div>
                 <FileUploader onUploadComplete={handleUploadComplete} />
             </div>
 

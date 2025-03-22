@@ -6,7 +6,7 @@ interface QueryResult {
     rows: Record<string, unknown>[]
 }
 
-type Operation = 'insert' | 'select' | 'delete' | 'update';
+type Operation = 'insert' | 'select' | 'delete' | 'update' | 'show';
 
 interface QueryResponse {
     rows?: Record<string, unknown>[];
@@ -37,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 return res.status(200).json({ success: true });
 
             case 'select':
+            case 'show':
                 const resultSet = await client.query({
                     query,
                     format: 'JSONEachRow'
