@@ -14,13 +14,14 @@ export const getClickHouseHeaders = (req: NextApiRequest): Record<string, string
     );
 };
 export const createClickHouseClient = (headers?: Record<string, string>): ClickHouseClient => {
-    const clickhouseUrl = process.env.CLICKHOUSE_URL 
-        || (process.env.NODE_ENV === 'production' 
-            ? 'https://sqlclickhouse-editor-git-master-berliners.vercel.app'
-            : 'http://localhost:8123');
+    const clickhouseUrl = process.env.CLICKHOUSE_URL || 'http://localhost:8123';
+    const username = process.env.CLICKHOUSE_USER || 'default';
+    const password = process.env.CLICKHOUSE_PASSWORD || '';
 
     return createClient({
-        url: clickhouseUrl,
+        host: clickhouseUrl,
+        username,
+        password,
         http_headers: headers
     });
 };
