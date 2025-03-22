@@ -1,0 +1,1 @@
+# sqlclickhouse-editor
