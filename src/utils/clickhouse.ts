@@ -15,15 +15,8 @@ export const getClickHouseHeaders = (req: NextApiRequest): Record<string, string
 };
 
 export const createClickHouseClient = (headers?: Record<string, string>): ClickHouseClient => {
-    if (!process.env.NEXT_PUBLIC_CLICKHOUSE_HOST) {
-        throw new Error('ClickHouse configuration missing');
-    }
-
     return createClient({
-        host: process.env.NEXT_PUBLIC_CLICKHOUSE_HOST,
-        username: process.env.NEXT_PUBLIC_CLICKHOUSE_USERNAME || 'default',
-        password: process.env.NEXT_PUBLIC_CLICKHOUSE_PASSWORD,
-        database: process.env.NEXT_PUBLIC_CLICKHOUSE_DATABASE,
+        url: 'http://localhost:8123',
         http_headers: headers
     });
 };
