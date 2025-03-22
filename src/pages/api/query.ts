@@ -2,6 +2,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createClickHouseClient, getClickHouseHeaders } from '../../utils/clickhouse';
 
+interface QueryResult {
+    rows: Record<string, unknown>[]
+}
+
 type Operation = 'insert' | 'select' | 'delete' | 'update';
 
 interface QueryResponse {
@@ -37,8 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     query,
                     format: 'JSONEachRow'
                 });
-                const rows = await resultSet.json();
-                return res.status(200).json({ rows });
+                const rows = await resultSet.json() as Record<string, unknown>[];
+                return res.status(200).json({ rows } as QueryResult);
 
             case 'delete':
             case 'update':

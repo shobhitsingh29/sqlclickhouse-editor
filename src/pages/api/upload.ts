@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { createClickHouseClient } from '../../utils/clickhouse';
+import {NextApiRequest, NextApiResponse} from 'next';
+import {createClickHouseClient} from '../../utils/clickhouse';
 
 interface UploadResponse {
     success?: boolean;
@@ -10,14 +10,14 @@ interface UploadResponse {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UploadResponse>) {
     if (req.method !== 'POST') {
-        res.status(405).json({ error: 'Method not allowed' });
+        res.status(405).json({error: 'Method not allowed'});
         return;
     }
 
-    const { fileContent } = req.body;
+    const {fileContent} = req.body;
 
     if (!fileContent) {
-        res.status(400).json({ error: 'File content is required' });
+        res.status(400).json({error: 'File content is required'});
         return;
     }
 
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         // Split content into individual queries
         const queries = fileContent
             .split(';')
-            .map(q => q.trim())
+            .map((q: string) => q.trim())
             .filter(Boolean);
 
         // Execute each query sequentially
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     query,
                     format: 'JSONEachRow'
                 });
-                const rows = await resultSet.json();
+                const rows: any = await resultSet.json();
                 results.push(...rows);
             } else if (
                 queryLower.startsWith('insert') ||
@@ -51,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 queryLower.startsWith('truncate')
             ) {
                 // DDL and DML operations
-                await client.exec({ query });
+                await client.exec({query});
             } else if (queryLower.startsWith('delete')) {
                 // ClickHouse doesn't support DELETE directly
                 throw new Error('DELETE operations must use ALTER TABLE ... DELETE instead');
@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 throw new Error('UPDATE operations must use ALTER TABLE ... UPDATE instead');
             } else {
                 // Handle other valid ClickHouse operations
-                await client.exec({ query });
+                await client.exec({query});
             }
         }
 
@@ -76,6 +76,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const message = error instanceof Error
             ? error.message
             : 'Query execution failed';
-        res.status(500).json({ error: message });
+        res.status(500).json({error: message});
     }
 }
