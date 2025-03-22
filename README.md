@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ## Setup
 
 - Requires docker and docker compose
