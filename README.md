@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Setup
 
 - Requires docker and docker compose
@@ -34,3 +35,6 @@ Note:
 
 We encourage you to make this your own, implementing features your feel appropriate, and introducing 3rd party dependencies that you want. We have our [UI component library](https://click-ui.vercel.app) if you want some help with the components design that can give you some leverage and accelerate speed of development, but you are free to use whatever you would prefer.
 # sql-clickhouse-editor
+=======
+# sqlclickhouse-editor
+>>>>>>> faa4ed49ca1733de56d03cba4cbdcc5911e6debf
